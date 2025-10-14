@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Animated, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
+  const [hasSearched, setHasSearched] = useState(false);
   const [searchInput, setSearch] = useState("");
 
   const position = useRef(new Animated.Value(0)).current; // 0 = center, 1 = top
@@ -11,9 +12,20 @@ export default function Index() {
     console.log("click");
   }
 
+  const onPress = () => {
+    //animate to center of the screen if we're not there already
+    Animated.timing(position, {
+      toValue: 0,
+      duration: 600,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: false,
+    }).start();
+  }
+
   const onSubmit = () => {
     console.log(searchInput);
 
+    setHasSearched(true);
 
     Animated.timing(position, {
       toValue: 1,
@@ -38,6 +50,7 @@ export default function Index() {
           <TextInput
             style={styles.input}
             placeholder="Sök på en stad eller address..."
+            onPress={onPress}
             onChangeText={setSearch}
             onSubmitEditing={onSubmit}
             returnKeyType="search"
@@ -46,6 +59,12 @@ export default function Index() {
             <Ionicons name="location-outline" size={32} color="black" />
           </TouchableOpacity>
         </Animated.View>
+
+        {hasSearched && (
+          
+        )}
+
+
       </View>
     </KeyboardAvoidingView>
   );
