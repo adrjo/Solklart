@@ -1,10 +1,15 @@
+import { getCities } from "@/api/weather";
+import { SearchResult } from "@/components/search-result";
+import { City } from "@/stores/City";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState } from "react";
-import { Animated, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
-  const [hasSearched, setHasSearched] = useState(false);
   const [searchInput, setSearch] = useState("");
+
+  const [searchResults, setSearchResults] = useState(Array<City>);
+  const [renderedCity, setRenderedCity] = useState<City | null>(null);
 
   const position = useRef(new Animated.Value(0)).current; // 0 = center, 1 = top
 
@@ -22,10 +27,8 @@ export default function Index() {
     }).start();
   }
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log(searchInput);
-
-    setHasSearched(true);
 
     Animated.timing(position, {
       toValue: 1,
@@ -33,6 +36,20 @@ export default function Index() {
       easing: Easing.out(Easing.exp),
       useNativeDriver: false,
     }).start();
+
+    const results: Array<City> = await getCities(searchInput);
+    console.log(results);
+
+    if (results.length == 1) {
+      setRenderedCity(results[0]);
+      return;
+    }
+
+    if (results.length == 0) {
+      Alert.alert("No results", "No results found for '" + searchInput + "'");
+      return;
+    }
+    setSearchResults(results);
   }
 
   const marginTop = position.interpolate({
@@ -60,8 +77,8 @@ export default function Index() {
           </TouchableOpacity>
         </Animated.View>
 
-        {hasSearched && (
-          
+        {searchResults.length > 1 && (
+          <SearchResult />
         )}
 
 
