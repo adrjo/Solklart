@@ -14,4 +14,21 @@ export class City {
         this.lat = lat;
         this.state = state;
     }
+
+    hashCode(): number {
+        const str = this.name.toLowerCase() + "|" + this.country.toLowerCase() + "|" + this.state.toLowerCase();
+
+        let hash = 0;
+        const prime = 31;
+
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * prime + str.charCodeAt(i)) | 0;
+        }
+
+        return hash >>> 0;
+    }
+
+    equals(other: City): boolean {
+        return this.hashCode() === other.hashCode();
+    }
 }
