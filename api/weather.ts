@@ -6,6 +6,8 @@ const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY;
 const GEOCODING_API_URL = "http://api.openweathermap.org/geo/1.0/direct?q={name}&limit=20&appid=" + API_KEY;
 
+const WEATHER_ICON_URL = "https://openweathermap.org/img/wn/{icon}@4x.png";
+
 const cachedCities: Record<string, Array<City>> = {};
 
 export async function getCities(search: string) {
@@ -75,4 +77,8 @@ export async function getWeather(lat: Number, lon: Number) {
     });
 
     return weatherObj;
+}
+
+export function getWeatherIconUrl(icon: string) {
+    return WEATHER_ICON_URL.replace("{icon}", icon);
 }
