@@ -28,8 +28,11 @@ export default function Index() {
   }
 
   const onSubmit = async () => {
-    console.log(searchInput);
+    if (!searchInput.trim) {
+      return;
+    }
 
+    //animate to the top of the screen
     Animated.timing(position, {
       toValue: 1,
       duration: 600,
