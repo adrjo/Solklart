@@ -1,7 +1,7 @@
 import { getCities, getLocationFromCoords } from "@/api/weather";
 import { ResultItem } from "@/components/result-item";
 import { ResultList } from "@/components/result-list";
-import { City } from "@/stores/City";
+import { City } from "@/models/City";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Location from 'expo-location';
 import { useRef, useState } from "react";
@@ -33,7 +33,7 @@ export default function Index() {
     let city: any = await getLocationFromCoords(coords.latitude, coords.longitude);
 
     setRenderedCity(city);
-    
+
     //animate to the top of the screen
     Animated.timing(position, {
       toValue: 1,

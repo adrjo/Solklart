@@ -1,5 +1,5 @@
-import { City } from "@/stores/City";
-import { Weather } from "@/stores/Weather";
+import { City } from "@/models/City";
+import { Weather } from "@/models/Weather";
 
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 

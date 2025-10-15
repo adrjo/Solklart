@@ -1,7 +1,7 @@
 import { getFlagUrl } from "@/api/flags";
 import { getWeatherCity, getWeatherIconUrl } from "@/api/weather";
-import { City } from "@/stores/City";
-import { Weather } from "@/stores/Weather";
+import { City } from "@/models/City";
+import { Weather } from "@/models/Weather";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 

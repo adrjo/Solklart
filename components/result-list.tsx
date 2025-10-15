@@ -1,5 +1,5 @@
 import { getFlagUrl } from "@/api/flags";
-import { City } from "@/stores/City";
+import { City } from "@/models/City";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface ResultListProps {
