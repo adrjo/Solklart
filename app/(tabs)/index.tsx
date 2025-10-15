@@ -6,7 +6,7 @@ import { cityStore } from "@/stores/selected-city";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Location from 'expo-location';
 import { useEffect, useRef, useState } from "react";
-import { Alert, Animated, Dimensions, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Dimensions, Easing, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const [searchInput, setSearch] = useState("");
@@ -86,8 +86,7 @@ export default function Index() {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <View
       style={styles.outer}
     >
       <Animated.View style={[styles.container, { marginTop }]}>
@@ -114,7 +113,7 @@ export default function Index() {
 
       </Animated.View>
 
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

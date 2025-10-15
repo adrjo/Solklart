@@ -60,27 +60,41 @@ export default function FavoritesTab() {
         )
     }
 
+    if (sorted.length == 0) {
+        return (
+            <View style={styles.centered}>
+                <Text>No favorites :(</Text>
+            </View>
+        )
+    }
+
     return (
         <View style={styles.outer}>
-            <View>
-                <FlatList
-                    data={sorted}
-                    renderItem={(item) => renderFavorite(item.item)}
-                    contentContainerStyle={styles.container}
-                    showsVerticalScrollIndicator={false}
-                />
-            </View>
+            <Text style={styles.title}>Favorites</Text>
+            <FlatList
+                data={sorted}
+                renderItem={(item) => renderFavorite(item.item)}
+                contentContainerStyle={styles.container}
+                showsVerticalScrollIndicator={false}
+            />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    centered: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     outer: {
-        margin: 15,
+        flex: 1,
+        marginTop: 40,
         alignItems: 'center',
     },
     container: {
-        marginTop: 80,
+        padding: 20,
+        minWidth: 300,
     },
     cardContainer: {
         backgroundColor: "white",
