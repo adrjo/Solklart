@@ -44,7 +44,7 @@ export const favoritesStore = create<FavoritesStore>((set, get) => ({
 
     removeFavorite: async (city: City) => {
         const favorites = get().favorites;
-        const filtered = favorites.filter((c) => !c.equals(city));
+        const filtered = favorites.filter((c) => !City.equals(c, city));
 
         // update storage
         await AsyncStorage.setItem("favorites", JSON.stringify(filtered));
@@ -56,6 +56,6 @@ export const favoritesStore = create<FavoritesStore>((set, get) => ({
     isFavorite: (city: City) => {
         const favorites = get().favorites;
 
-        return favorites.some(c => c.equals(city));
+        return favorites.some(c => City.equals(c, city));
     }
 }));

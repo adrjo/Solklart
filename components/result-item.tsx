@@ -2,6 +2,7 @@ import { getFlagUrl } from "@/api/flags";
 import { getWeatherCity, getWeatherIconUrl } from "@/api/weather";
 import { City } from "@/models/City";
 import { Weather } from "@/models/Weather";
+import { favoritesStore } from "@/stores/favorites";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
@@ -13,6 +14,19 @@ interface ICity {
 export function ResultItem({ city }: ICity) {
     const [weather, setWeather] = useState<Weather>();
 
+    const [favorited, setFavorited] = useState(false);
+
+    const addFavorite = (city: City) => favoritesStore.getState().addFavorite(city);
+    const removeFavorite = (city: City) => favoritesStore.getState().removeFavorite(city);
+
+    const toggleFavorite = () => {
+        if (favorited) {
+            removeFavorite(city);
+        } else {
+            addFavorite(city);
+        }
+        setFavorited(!favorited);
+    }
 
     useEffect(() => {
         const fetchWeather = async () => {
@@ -25,6 +39,7 @@ export function ResultItem({ city }: ICity) {
         };
 
         fetchWeather();
+        setFavorited(favoritesStore.getState().isFavorite(city));
     }, [city]);
 
     if (!weather) {
@@ -40,8 +55,8 @@ export function ResultItem({ city }: ICity) {
                 <Text style={styles.title}>{city.name}</Text>
             </View>
 
-            <Pressable style={styles.star}>
-                <Ionicons name="star-outline" size={24} color='black' />
+            <Pressable style={styles.star} onPress={toggleFavorite}>
+                <Ionicons name={favorited ? "star" : "star-outline"} size={24} color={favorited ? "yellow" : "black"} />
             </Pressable>
 
             <View style={styles.row}>
@@ -112,9 +127,9 @@ const styles = StyleSheet.create({
         gap: 15,
     },
     star: {
-        position:'relative',
-        right:10,
-        top:-47,
+        position: 'relative',
+        right: 10,
+        top: -47,
         marginRight: 0,
         margin: 'auto'
     },

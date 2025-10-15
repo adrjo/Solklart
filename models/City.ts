@@ -15,20 +15,9 @@ export class City {
         this.state = state;
     }
 
-    hashCode(): number {
-        const str = this.name.toLowerCase() + "|" + this.country.toLowerCase() + "|" + this.state.toLowerCase();
-
-        let hash = 0;
-        const prime = 31;
-
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash * prime + str.charCodeAt(i)) | 0;
-        }
-
-        return hash >>> 0;
-    }
-
-    equals(other: City): boolean {
-        return this.hashCode() === other.hashCode();
+    static equals(city1: any, city2: City): boolean {
+        return city1.name === city2.name &&
+            city1.country === city2.country &&
+            city1.state === city2.state;
     }
 }
