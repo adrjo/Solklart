@@ -2,8 +2,9 @@ import { getFlagUrl } from "@/api/flags";
 import { getWeatherCity, getWeatherIconUrl } from "@/api/weather";
 import { City } from "@/models/City";
 import { Weather } from "@/models/Weather";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 interface ICity {
     city: City;
@@ -38,6 +39,10 @@ export function ResultItem({ city }: ICity) {
                 <Image source={{ uri: flag, width: 24, height: 24 }} />
                 <Text style={styles.title}>{city.name}</Text>
             </View>
+
+            <Pressable style={styles.star}>
+                <Ionicons name="star-outline" size={24} color='black' />
+            </Pressable>
 
             <View style={styles.row}>
                 <Image
@@ -97,7 +102,6 @@ const styles = StyleSheet.create({
         fontSize: 26,
         fontWeight: "600",
         textAlign: "center",
-        marginBottom: 10,
         color: "#333",
     },
     row: {
@@ -106,6 +110,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginBottom: 15,
         gap: 15,
+    },
+    star: {
+        position:'relative',
+        right:10,
+        top:-47,
+        marginRight: 0,
+        margin: 'auto'
     },
     icon: {
         width: 72,
