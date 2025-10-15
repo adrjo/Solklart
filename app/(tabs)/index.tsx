@@ -4,7 +4,7 @@ import { ResultList } from "@/components/result-list";
 import { City } from "@/stores/City";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState } from "react";
-import { Alert, Animated, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Dimensions, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const [searchInput, setSearch] = useState("");
@@ -14,10 +14,11 @@ export default function Index() {
 
   const [renderedCity, setRenderedCity] = useState<City | null>(null);
 
+  const height = Dimensions.get("window").height;
   const position = useRef(new Animated.Value(0)).current; // 0 = center, 1 = top
   const marginTop = position.interpolate({
     inputRange: [0, 1],
-    outputRange: ["100%", "10%"], // start centered, end at the top
+    outputRange: [height / 2 - 90, 30], // start centered (half the screen height + tab height), move to top of screen
   });
 
   const onGpsClick = () => {
