@@ -2,6 +2,9 @@ import { City } from "@/stores/City";
 
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
+const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY;
+const GEOCODING_API_URL = "http://api.openweathermap.org/geo/1.0/direct?q={name}&limit=20&appid=" + API_KEY;
+
 //cached results
 const cache: Record<string, Array<City>> = {};
 
@@ -12,10 +15,7 @@ export async function getCities(search: string) {
         return cache[lower];
     }
 
-    const GEOCODING_URL = "http://api.openweathermap.org/geo/1.0/direct?q=" + search + "&limit=20" +
-        "&appid=" + API_KEY;
-
-    const response = await fetch(GEOCODING_URL);
+    const response = await fetch(GEOCODING_API_URL.replace("{name}", search));
 
     if (response.ok) {
         const json = await response.json();
@@ -32,4 +32,7 @@ export async function getCities(search: string) {
     }
 
     return [];
+}
+
+export async function getWeather(lat: Number, lon: number) {
 }
