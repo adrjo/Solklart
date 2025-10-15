@@ -1,3 +1,4 @@
+import { getFlagUrl } from "@/api/flags";
 import { getWeatherCity, getWeatherIconUrl } from "@/api/weather";
 import { City } from "@/stores/City";
 import { Weather } from "@/stores/Weather";
@@ -10,6 +11,7 @@ interface ICity {
 
 export function ResultItem({ city }: ICity) {
     const [weather, setWeather] = useState<Weather>();
+
 
     useEffect(() => {
         const fetchWeather = async () => {
@@ -29,9 +31,14 @@ export function ResultItem({ city }: ICity) {
         return <Text>Loading...</Text>;
     }
 
+    const flag = getFlagUrl(city.country, 24);
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{city.name}</Text>
+            <View style={styles.row}>
+                <Image source={{ uri: flag, width: 24, height: 24 }} />
+                <Text style={styles.title}>{city.name}</Text>
+            </View>
 
             <View style={styles.row}>
                 <Image
