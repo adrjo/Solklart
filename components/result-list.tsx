@@ -1,5 +1,6 @@
+import { getFlagUrl } from "@/api/flags";
 import { City } from "@/stores/City";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface ResultListProps {
     items: Array<City>;
@@ -9,8 +10,10 @@ interface ResultListProps {
 export function ResultList({ items, onItemPress }: ResultListProps) {
     const renderResultItem = (item: any) => {
         const city: City = item.item;
+        const flag = getFlagUrl(city.country, 24);
         return (
             <TouchableOpacity style={styles.item} onPress={() => { onItemPress(city) }}>
+                <Image source={{ uri: flag, width: 24, height: 24 }} />
                 <Text style={styles.itemText}>{city.name}</Text>
             </TouchableOpacity>
         )
@@ -37,10 +40,12 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: .2,
         shadowRadius: 3,
-        maxWidth:400,
-        width:'100%',
+        maxWidth: 400,
+        width: '100%',
     },
     item: {
+        flexDirection:'row',
+        gap:15,
         padding: 15,
         borderBottomColor: "#eee",
         borderBottomWidth: 1,
