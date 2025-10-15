@@ -1,9 +1,9 @@
 export class Weather {
     temp: {
-        temp: Number,
-        tempFeelsLike: Number,
-        tempMax: Number,
-        tempMin: Number
+        temp: number,
+        tempFeelsLike: number,
+        tempMax: number,
+        tempMin: number
     };
     weather: {
         title: string,
@@ -14,8 +14,8 @@ export class Weather {
     sunset: Date;
     sunrise: Date;
 
-    rainAmt?: Number;
-    snowAmt?: Number;
+    rainAmt?: number;
+    snowAmt?: number;
 
     constructor({
         temp,
