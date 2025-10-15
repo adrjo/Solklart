@@ -20,8 +20,12 @@ export async function getCities(search: string) {
     if (response.ok) {
         const json = await response.json();
 
-        const mappedList: Array<City> = json.map
-            ((entry: any) => new City(entry.name, entry.country, entry.lon, entry.lat, entry.state));
+        const mappedList: Array<City> = json
+            .map((entry: any) => new City(entry.name, entry.country, entry.lon, entry.lat, entry.state))
+            .filter((city: City, index: Number, self: City[]) =>
+                index === self.findIndex(
+                    c => c.name === city.name && c.country === city.country
+                ));
 
         cache[lower] = mappedList;
         return mappedList;
