@@ -1,8 +1,9 @@
-import { getCities } from "@/api/weather";
+import { getCities, getLocationFromCoords } from "@/api/weather";
 import { ResultItem } from "@/components/result-item";
 import { ResultList } from "@/components/result-list";
 import { City } from "@/stores/City";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Location from 'expo-location';
 import { useRef, useState } from "react";
 import { Alert, Animated, Dimensions, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -21,8 +22,25 @@ export default function Index() {
     outputRange: [height / 2 - 90, 30], // start centered (half the screen height + tab height), move to top of screen
   });
 
-  const onGpsClick = () => {
-    console.log("click");
+  const onGpsClick = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert("No permission", "Permission to use location was denied")
+      return;
+    }
+
+    let coords = (await Location.getCurrentPositionAsync({})).coords;
+    let city: any = await getLocationFromCoords(coords.latitude, coords.longitude);
+
+    setRenderedCity(city);
+    
+    //animate to the top of the screen
+    Animated.timing(position, {
+      toValue: 1,
+      duration: 600,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: false,
+    }).start();
   }
 
   const onPress = () => {
@@ -84,7 +102,7 @@ export default function Index() {
             returnKeyType="search"
           />
           <TouchableOpacity style={styles.gps} onPress={onGpsClick}>
-            <Ionicons name="location-outline" size={32} color="black" />
+            <Ionicons name="locate-outline" size={24} color="black" />
           </TouchableOpacity>
         </View>
         {shouldRenderList && searchResults.length > 1 && (

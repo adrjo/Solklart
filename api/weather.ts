@@ -5,6 +5,7 @@ const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
 const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY;
 const GEOCODING_API_URL = "http://api.openweathermap.org/geo/1.0/direct?q={name}&limit=20&appid=" + API_KEY;
+const REVERSE_GEOCODING_API_URL = "http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&limit=1&appid=" + API_KEY;
 
 const WEATHER_ICON_URL = "https://openweathermap.org/img/wn/{icon}@4x.png";
 
@@ -35,6 +36,28 @@ export async function getCities(search: string) {
     cachedCities[lower] = mappedList;
     return mappedList;
 
+}
+
+export async function getLocationFromCoords(lat: number, lon: number) {
+    if (!lat || !lon) {
+        throw new Error("Invalid coordinates");
+    }
+    const url = REVERSE_GEOCODING_API_URL
+        .replace("{lat}", lat.toString())
+        .replace("{lon}", lon.toString());
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch location at (" + lat + "," + lon + ")");
+    }
+
+    const json = await response.json();
+    const entry = json[0]; // response is an array, get the first entry
+
+    let city = new City(entry.name, entry.country, entry.lon, entry.lat, entry?.state);
+
+    return city;
 }
 
 export async function getWeatherCity(city: City) {

@@ -17,7 +17,6 @@ export function ResultItem({ city }: ICity) {
         const fetchWeather = async () => {
             try {
                 const fetchedWeather: Weather = await getWeatherCity(city);
-                console.log(fetchedWeather);
                 setWeather(fetchedWeather);
             } catch (error) {
                 console.error("Failed to fetch weather:", error);
