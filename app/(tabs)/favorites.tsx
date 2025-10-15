@@ -43,6 +43,7 @@ export default function FavoritesTab() {
                     onPress={(e) => {
                         e.stopPropagation();
                         removeFavorite(city);
+                        setSelected(null);
                     }}
                 >
                     <View style={styles.starContainer}>
