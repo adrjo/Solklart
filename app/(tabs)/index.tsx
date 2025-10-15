@@ -72,8 +72,8 @@ export default function Index() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.outer}
     >
-      <View style={styles.container}>
-        <Animated.View style={[styles.textContainer, { marginTop }]}>
+      <Animated.View style={[styles.container, { marginTop }]}>
+        <View style={styles.textContainer}>
           <TextInput
             style={styles.input}
             placeholder="Sök på en stad eller address..."
@@ -85,8 +85,7 @@ export default function Index() {
           <TouchableOpacity style={styles.gps} onPress={onGpsClick}>
             <Ionicons name="location-outline" size={32} color="black" />
           </TouchableOpacity>
-        </Animated.View>
-
+        </View>
         {shouldRenderList && searchResults.length > 1 && (
           <ResultList items={searchResults} onItemPress={(city) => onItemPress(city)} />
         )}
@@ -95,8 +94,8 @@ export default function Index() {
           <ResultItem city={renderedCity} />
         )}
 
+      </Animated.View>
 
-      </View>
     </KeyboardAvoidingView>
   );
 }
