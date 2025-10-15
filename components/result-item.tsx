@@ -57,6 +57,14 @@ export function ResultItem({ city }: ICity) {
 
             <Pressable style={styles.star} onPress={toggleFavorite}>
                 <Ionicons name={favorited ? "star" : "star-outline"} size={24} color={favorited ? "yellow" : "black"} />
+                {favorited && (
+                    <Ionicons
+                        name="star-outline"
+                        size={24}
+                        color="black"
+                        style={{ position: 'absolute', left:5, top:5 }}
+                    />
+                )}
             </Pressable>
 
             <View style={styles.row}>
@@ -131,7 +139,11 @@ const styles = StyleSheet.create({
         right: 10,
         top: -47,
         marginRight: 0,
-        margin: 'auto'
+        margin: 'auto',
+        backgroundColor: '#E3F2FD',
+        padding: 5,
+        borderRadius: '100%',
+        elevation: 3,
     },
     icon: {
         width: 72,
