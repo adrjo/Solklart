@@ -1,13 +1,18 @@
 import { getFlagUrl } from "@/api/flags";
 import { City } from "@/models/City";
 import { favoritesStore } from "@/stores/favorites";
+import { cityStore } from "@/stores/selected-city";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function FavoritesTab() {
+    const router = useRouter();
+
     const favorites = favoritesStore(state => state.favorites);
     const removeFavorite = favoritesStore(state => state.removeFavorite);
+    const setSelected = cityStore(state => state.setSelected);
 
     useEffect(() => {
         const sortedFavorites = [...favorites].sort((c1: City, c2: City) =>
@@ -22,6 +27,8 @@ export default function FavoritesTab() {
         const flag = getFlagUrl(city.country, 24);
 
         const handleClick = () => {
+            setSelected(city);
+            router.replace("/");
         }
 
         return (

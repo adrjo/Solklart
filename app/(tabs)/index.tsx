@@ -2,9 +2,10 @@ import { getCities, getLocationFromCoords } from "@/api/weather";
 import { ResultItem } from "@/components/result-item";
 import { ResultList } from "@/components/result-list";
 import { City } from "@/models/City";
+import { cityStore } from "@/stores/selected-city";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Location from 'expo-location';
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Animated, Dimensions, Easing, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
@@ -13,7 +14,8 @@ export default function Index() {
   const [searchResults, setSearchResults] = useState<Array<City>>([]);
   const [shouldRenderList, setShouldRenderList] = useState(true);
 
-  const [renderedCity, setRenderedCity] = useState<City | null>(null);
+  const selected = cityStore(state => state.selected);
+  const setSelected = cityStore(state => state.setSelected);
 
   const height = Dimensions.get("window").height;
   const position = useRef(new Animated.Value(0)).current; // 0 = center, 1 = top
@@ -21,6 +23,19 @@ export default function Index() {
     inputRange: [0, 1],
     outputRange: [height / 2 - 90, 30], // start centered (half the screen height + tab height), move to top of screen
   });
+
+  useEffect(() => {
+    if (selected) {
+      //animate to the top of the screen
+      Animated.timing(position, {
+        toValue: 1,
+        duration: 600,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: false,
+      }).start();
+    }
+  },[selected])
+
 
   const onGpsClick = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -32,15 +47,7 @@ export default function Index() {
     let coords = (await Location.getCurrentPositionAsync({})).coords;
     let city: any = await getLocationFromCoords(coords.latitude, coords.longitude);
 
-    setRenderedCity(city);
-
-    //animate to the top of the screen
-    Animated.timing(position, {
-      toValue: 1,
-      duration: 600,
-      easing: Easing.out(Easing.exp),
-      useNativeDriver: false,
-    }).start();
+    setSelected(city);
   }
 
   const onPress = () => {
@@ -58,18 +65,10 @@ export default function Index() {
       return;
     }
 
-    //animate to the top of the screen
-    Animated.timing(position, {
-      toValue: 1,
-      duration: 600,
-      easing: Easing.out(Easing.exp),
-      useNativeDriver: false,
-    }).start();
-
     const results: Array<City> = await getCities(searchInput);
 
     if (results.length == 1) {
-      setRenderedCity(results[0]);
+      setSelected(results[0]);
       return;
     }
 
@@ -82,7 +81,7 @@ export default function Index() {
   }
 
   const onItemPress = (city: City) => {
-    setRenderedCity(city);
+    setSelected(city);
     setShouldRenderList(false);
   }
 
@@ -109,8 +108,8 @@ export default function Index() {
           <ResultList items={searchResults} onItemPress={(city) => onItemPress(city)} />
         )}
 
-        {renderedCity && (
-          <ResultItem city={renderedCity} />
+        {selected && (
+          <ResultItem city={selected} />
         )}
 
       </Animated.View>
