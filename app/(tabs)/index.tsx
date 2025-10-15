@@ -1,5 +1,6 @@
 import { getCities } from "@/api/weather";
-import { SearchResult } from "@/components/search-result";
+import { ResultItem } from "@/components/result-item";
+import { ResultList } from "@/components/result-list";
 import { City } from "@/stores/City";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState } from "react";
@@ -8,10 +9,16 @@ import { Alert, Animated, Easing, KeyboardAvoidingView, Platform, StyleSheet, Te
 export default function Index() {
   const [searchInput, setSearch] = useState("");
 
-  const [searchResults, setSearchResults] = useState(Array<City>);
+  const [searchResults, setSearchResults] = useState<Array<City>>([]);
+  const [shouldRenderList, setShouldRenderList] = useState(true);
+
   const [renderedCity, setRenderedCity] = useState<City | null>(null);
 
   const position = useRef(new Animated.Value(0)).current; // 0 = center, 1 = top
+  const marginTop = position.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["100%", "10%"], // start centered, end at the top
+  });
 
   const onGpsClick = () => {
     console.log("click");
@@ -28,7 +35,7 @@ export default function Index() {
   }
 
   const onSubmit = async () => {
-    if (!searchInput.trim) {
+    if (!searchInput.trim()) {
       return;
     }
 
@@ -41,7 +48,6 @@ export default function Index() {
     }).start();
 
     const results: Array<City> = await getCities(searchInput);
-    console.log(results);
 
     if (results.length == 1) {
       setRenderedCity(results[0]);
@@ -53,12 +59,13 @@ export default function Index() {
       return;
     }
     setSearchResults(results);
+    setShouldRenderList(true);
   }
 
-  const marginTop = position.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["100%", "10%"], // start centered, end at the top
-  });
+  const onItemPress = (city: City) => {
+    setRenderedCity(city);
+    setShouldRenderList(false);
+  }
 
   return (
     <KeyboardAvoidingView
@@ -80,8 +87,12 @@ export default function Index() {
           </TouchableOpacity>
         </Animated.View>
 
-        {searchResults.length > 1 && (
-          <SearchResult />
+        {shouldRenderList && searchResults.length > 1 && (
+          <ResultList items={searchResults} onItemPress={(city) => onItemPress(city)} />
+        )}
+
+        {renderedCity && (
+          <ResultItem city={renderedCity} />
         )}
 
 
