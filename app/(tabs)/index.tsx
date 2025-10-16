@@ -35,7 +35,7 @@ export default function Index() {
         useNativeDriver: false,
       }).start();
     }
-  },[selected])
+  }, [selected])
 
 
   const onGpsClick = async () => {
@@ -48,11 +48,25 @@ export default function Index() {
     setSelected(null);
     setLoading(true);
 
-    let coords = (await Location.getCurrentPositionAsync({})).coords;
-    let city: any = await getLocationFromCoords(coords.latitude, coords.longitude);
+    try {
+      let coords = (await Location.getLastKnownPositionAsync({}))?.coords;
+      if (!coords) {
+        const location = await Location.getCurrentPositionAsync({});
+        coords = location.coords;
+      }
 
-    setLoading(false);
-    setSelected(city);
+      if (!coords) {
+        throw new Error("Failed to fetch position");
+      }
+
+      let city = await getLocationFromCoords(coords.latitude, coords.longitude);
+      setSelected(city);
+
+    } catch (e: any) {
+      Alert.alert("Couldn't get position", e.message || "Unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const onPress = () => {
