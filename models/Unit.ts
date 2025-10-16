@@ -24,6 +24,6 @@ export class Unit {
     }
 
     toString(): string {
-        return this.name;
+        return this.name + " (" + this.symbol + ")";
     }
 }

@@ -2,7 +2,6 @@ import { create } from "zustand";
 
 import { Unit } from "@/models/Unit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Float } from "react-native/Libraries/Types/CodegenTypesNamespace";
 
 interface UnitStore {
     selectedUnit: Unit;
@@ -10,7 +9,7 @@ interface UnitStore {
     loadUnit: () => void;
     selectUnit: (unit: Unit) => void;
 
-    convertKelvin: (kelvinTemperature: number) => Float;
+    convertKelvin: (kelvinTemperature: number) => number;
 
 }
 
@@ -31,7 +30,7 @@ export const unitStore = create<UnitStore>((set, get) => ({
     },
 
     selectUnit: async (unit: Unit) => {
-        await AsyncStorage.setItem("unit", JSON.stringify(unit));
+        await AsyncStorage.setItem("unit", unit.name);
 
         set({ selectedUnit: unit });
     },
