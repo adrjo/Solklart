@@ -3,6 +3,7 @@ import { getWeatherCity, getWeatherIconUrl } from "@/api/weather";
 import { City } from "@/models/City";
 import { Weather } from "@/models/Weather";
 import { favoritesStore } from "@/stores/favorites";
+import { unitStore } from "@/stores/unit";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
@@ -13,8 +14,10 @@ interface ICity {
 
 export function ResultItem({ city }: ICity) {
     const [weather, setWeather] = useState<Weather>();
-
     const [favorited, setFavorited] = useState(false);
+
+    const unit = unitStore(state => state.selectedUnit)
+    const convertKelvin = unitStore.getState().convertKelvin;
 
     const addFavorite = (city: City) => favoritesStore.getState().addFavorite(city);
     const removeFavorite = (city: City) => favoritesStore.getState().removeFavorite(city);
@@ -48,6 +51,14 @@ export function ResultItem({ city }: ICity) {
 
     const flag = getFlagUrl(city.country, 24);
 
+
+    const tempConverted = {
+        temp: convertKelvin(weather.temp.temp),
+        tempFeelsLike: convertKelvin(weather.temp.tempFeelsLike),
+        tempMin: convertKelvin(weather.temp.tempMin),
+        tempMax: convertKelvin(weather.temp.tempMax),
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.row}>
@@ -73,17 +84,17 @@ export function ResultItem({ city }: ICity) {
                     style={styles.icon}
                 />
                 <View style={styles.tempContainer}>
-                    <Text style={styles.temp}>{weather.temp.temp}°</Text>
+                    <Text style={styles.temp}>{tempConverted.temp + unit.symbol}</Text>
                     <Text style={styles.condition}>{weather.weather.title}</Text>
                 </View>
             </View>
 
             <View style={styles.details}>
                 <Text style={styles.detailText}>
-                    Feels like {Math.round(weather.temp.tempFeelsLike)}°
+                    Feels like {Math.round(tempConverted.tempFeelsLike) + unit.symbol}
                 </Text>
                 <Text style={styles.detailText}>
-                    H: {weather.temp.tempMax}°  L: {weather.temp.tempMin}°
+                    H: {tempConverted.tempMax + unit.symbol}  L: {tempConverted.tempMin + unit.symbol}
                 </Text>
 
                 {(weather.rainAmt || weather.snowAmt) && (

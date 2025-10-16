@@ -39,10 +39,10 @@ export const unitStore = create<UnitStore>((set, get) => ({
         const selectedUnit = get().selectedUnit;
         switch (selectedUnit) {
             case Unit.CELSIUS: {
-                return kelvinTemperature - 273.15;
+                return Math.round(kelvinTemperature - 273.15);
             }
             case Unit.FAHRENHEIT: {
-                return ((kelvinTemperature - 273.15) * 1.8) + 32;
+                return Math.round(((kelvinTemperature - 273.15) * 1.8) + 32);
             }
             default: {
                 return kelvinTemperature;
