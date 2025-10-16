@@ -6,13 +6,14 @@ import { cityStore } from "@/stores/selected-city";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Location from 'expo-location';
 import { useEffect, useRef, useState } from "react";
-import { Alert, Animated, Dimensions, Easing, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Dimensions, Easing, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const [searchInput, setSearch] = useState("");
 
   const [searchResults, setSearchResults] = useState<Array<City>>([]);
   const [shouldRenderList, setShouldRenderList] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const selected = cityStore(state => state.selected);
   const setSelected = cityStore(state => state.setSelected);
@@ -44,9 +45,13 @@ export default function Index() {
       return;
     }
 
+    setSelected(null);
+    setLoading(true);
+
     let coords = (await Location.getCurrentPositionAsync({})).coords;
     let city: any = await getLocationFromCoords(coords.latitude, coords.longitude);
 
+    setLoading(false);
     setSelected(city);
   }
 
@@ -105,6 +110,10 @@ export default function Index() {
         </View>
         {shouldRenderList && searchResults.length > 1 && (
           <ResultList items={searchResults} onItemPress={(city) => onItemPress(city)} />
+        )}
+
+        {!selected && loading && (
+          <Text>Loading...</Text>
         )}
 
         {selected && (
